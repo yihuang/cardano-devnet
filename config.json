@@ -18,7 +18,7 @@
   "TraceDNSResolver": true,
   "TraceDNSSubscription": true,
   "TraceErrorPolicy": true,
-  "TraceForge": true,
+  "TraceForge": false,
   "TraceHandshake": false,
   "TraceIpSubscription": true,
   "TraceLocalChainSyncProtocol": false,

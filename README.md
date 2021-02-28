@@ -1,5 +1,7 @@
 > Prepare `cardano-node` in `PATH` in advance.
 
+Customize `config.json` and `genesis.spec.json`.
+
 ```
 $ ./serve.sh
 ...

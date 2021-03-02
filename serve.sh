@@ -1,27 +1,18 @@
-#!/bin/bash
-DATA=${1:-"./data"}
-rm -rf $DATA
-mkdir $DATA
-cp ./genesis.spec.json $DATA
-cp ./config.json $DATA
-cardano-cli genesis create --testnet-magic 42 \
-    --genesis-dir $DATA \
-    --gen-genesis-keys 1 \
-    --gen-utxo-keys 1
-jq -r --arg systemStart $(date --utc +"%Y-%m-%dT%H:%M:%SZ" --date="5 seconds") \
-    '.systemStart = $systemStart | .updateQuorum = 1' \
-    $DATA/genesis.json | sponge $DATA/genesis.json
-cat > $DATA/topology.yaml << EOF
-{"Producers":[]}
-EOF
-cardano-node run \
-    --config $DATA/config.json \
-    --database-path $DATA/db \
-    --topology $DATA/topology.yaml \
-    --host-addr 127.0.0.1 \
-    --port 30001 \
-    --socket-path $DATA/node.socket \
-    --shelley-vrf-key $DATA/delegate-keys/delegate1.vrf.skey \
-    --shelley-kes-key $DATA/delegate-keys/delegate1.kes.skey \
-    --shelley-operational-certificate $DATA/delegate-keys/opcert1.cert
-echo $DATA/node.socket
+#!/bin/sh
+rm -rf example
+./mkfiles.sh
+supervisord -n -c supervisor.conf &
+
+export CARDANO_NODE_SOCKET_PATH=example/node-bft1/node.sock
+while [ ! -S "$CARDANO_NODE_SOCKET_PATH" ]; do
+  echo "Waiting 5 seconds for bft node to start"; sleep 5
+done
+
+cardano-cli submit-tx \
+            --testnet-magic 42 \
+            --tx example/tx0.tx
+cardano-cli submit-tx \
+            --testnet-magic 42 \
+            --tx example/tx1.tx
+
+wait

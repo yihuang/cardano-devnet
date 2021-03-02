@@ -1,5 +1,11 @@
 > The script is adapted from [mkfiles.sh](https://github.com/input-output-hk/cardano-node/blob/master/scripts/byron-to-mary/mkfiles.sh)
 
+## TODO
+- Support sophisticated configuration for devnet
+  - setup how many nodes
+  - initial fund distribution
+  - what protocol and era to run
+
 ## Prerequisite
 
 - [supervisor](https://pypi.org/project/supervisor/)

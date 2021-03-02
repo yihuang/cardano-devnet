@@ -22,6 +22,7 @@ It will setup and run a byron-shelley hardfork chain, and upgrade from byron era
 Run following command to check if mary era is ready:
 
 ```shell
+$ export CARDANO_NODE_SOCKET_PATH=./example/node-bft1/node.sock
 $ cardano-cli query protocol-parameters --testnet-magic 42 --mary-era
 ```
 

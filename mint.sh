@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 CARDANO_NODE_SOCKET_PATH=./example/node-bft1/node.sock
 cardano-cli address key-gen --verification-key-file policy.vkey --signing-key-file policy.skey
 KEYHASH=$(cardano-cli address key-hash --payment-verification-key-file policy.vkey)

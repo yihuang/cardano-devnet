@@ -10,15 +10,15 @@ cat > policy.script << EOF
 }
 EOF
 POLICYID=$(cardano-cli transaction policyid --script-file ./policy.script)
-ADDR=$(cat ./example/byron/address-000-converted)
-TXID=$(cardano-cli query utxo --mary-era --testnet-magic 42 --address $ADDR|tail -n 1|cut -d ' ' -f 1)
+ADDR=$(cardano-cli address build --payment-verification-key-file example/shelley/utxo-keys/utxo1.vkey --testnet-magic 42)
+TXID=$(cardano-cli genesis initial-txin --testnet-magic 42 --verification-key-file ./example/shelley/utxo-keys/utxo1.vkey)
 cardano-cli transaction build-raw --mary-era --fee 0 \
-  --tx-in $TXID#0 \
-  --tx-out "$ADDR+5 $POLICYID.ADAHODLERS+500000000" \
+  --tx-in $TXID \
+  --tx-out "$ADDR+5 $POLICYID.ADAHODLERS+1000000000" \
   --mint "5 $POLICYID.ADAHODLERS" \
   --out-file mint.tx
 cardano-cli transaction sign \
-  --signing-key-file example/byron/payment-keys.000-converted.skey \
+  --signing-key-file example/shelley/utxo-keys/utxo1.skey \
   --signing-key-file policy.skey \
   --script-file policy.script \
   --testnet-magic 42 \

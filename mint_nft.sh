@@ -22,17 +22,17 @@ cat > policy.script << EOF
 }
 EOF
 POLICYID=$(cardano-cli transaction policyid --script-file ./policy.script)
-ADDR=$(cat ./example/byron/address-001-converted)
-TXID=$(cardano-cli query utxo --mary-era --testnet-magic 42 --address $ADDR|tail -n 1|cut -d ' ' -f 1)
+ADDR=$(cardano-cli address build --payment-verification-key-file example/shelley/utxo-keys/utxo1.vkey --testnet-magic 42)
+TXID=$(cardano-cli genesis initial-txin --testnet-magic 42 --verification-key-file ./example/shelley/utxo-keys/utxo1.vkey)
 echo "Mint 1 nft"
 cardano-cli transaction build-raw --mary-era --fee 0 \
-  --tx-in $TXID#0 \
-  --tx-out "$ADDR+1 $POLICYID.NFT+500000000" \
+  --tx-in $TXID \
+  --tx-out "$ADDR+1 $POLICYID.NFT+1000000000" \
   --mint "1 $POLICYID.NFT" \
   --invalid-hereafter $SLOTNUM_BEFORE \
   --out-file mint.tx
 cardano-cli transaction sign \
-  --signing-key-file example/byron/payment-keys.001-converted.skey \
+  --signing-key-file example/shelley/utxo-keys/utxo1.skey \
   --signing-key-file policy.skey \
   --script-file policy.script \
   --testnet-magic 42 \
@@ -44,11 +44,11 @@ sleep 10
 TXID=$(cardano-cli query utxo --mary-era --testnet-magic 42 --address $ADDR|tail -n 1|cut -d ' ' -f 1)
 cardano-cli transaction build-raw --mary-era --fee 0 \
   --tx-in $TXID#0 \
-  --tx-out "$ADDR+2 $POLICYID.NFT+500000000" \
+  --tx-out "$ADDR+2 $POLICYID.NFT+1000000000" \
   --mint "1 $POLICYID.NFT" \
   --out-file mint2.tx
 cardano-cli transaction sign \
-  --signing-key-file example/byron/payment-keys.001-converted.skey \
+  --signing-key-file example/shelley/utxo-keys/utxo1.skey \
   --signing-key-file policy.skey \
   --script-file policy.script \
   --testnet-magic 42 \

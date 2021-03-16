@@ -17,7 +17,7 @@
 $ ./serve.sh
 ```
 
-It will setup and run a byron-shelley hardfork chain, and upgrade from byron era all the way to mary era automatically, you just need to wait for 2.5 minutes.
+It will setup and run a byron-shelley hardfork chain, and upgrade to mary era automatically.
 
 Run following command to check if mary era is ready:
 

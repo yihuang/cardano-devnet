@@ -86,9 +86,9 @@ sed -i ${ROOT}/configuration.yaml \
 # - post another proposal + vote to go to protocol version 2
 
 #uncomment this for an automatic transition after the first epoch
-echo "TestShelleyHardForkAtEpoch: 1" >> ${ROOT}/configuration.yaml
-echo "TestAllegraHardForkAtEpoch: 2" >> ${ROOT}/configuration.yaml
-echo "TestMaryHardForkAtEpoch: 3" >> ${ROOT}/configuration.yaml
+echo "TestShelleyHardForkAtEpoch: 0" >> ${ROOT}/configuration.yaml
+echo "TestAllegraHardForkAtEpoch: 0" >> ${ROOT}/configuration.yaml
+echo "TestMaryHardForkAtEpoch: 0" >> ${ROOT}/configuration.yaml
 #uncomment this to trigger the hardfork with protocol version 1
 #echo "TestShelleyHardForkAtVersion: 1"  >> ${ROOT}/configuration.yaml
 
@@ -223,30 +223,6 @@ for N in ${BFT_NODES_N}; do
   cardano-cli byron key signing-key-address --byron-formats \
     --testnet-magic 42 \
     --secret byron/genesis-keys.00$((${N} - 1)).key > byron/genesis-address-00$((${N} - 1))
-
-  cardano-cli byron transaction issue-genesis-utxo-expenditure --byron-formats \
-    --genesis-json byron/genesis.json \
-    --testnet-magic 42 \
-    --tx tx$((${N} - 1)).tx \
-    --wallet-key byron/delegate-keys.00$((${N} - 1)).key \
-    --rich-addr-from $(head -n 1 byron/genesis-address-00$((${N} - 1))) \
-    --txout "(\"$(head -n 1 byron/address-00$((${N} - 1)))\", $FUNDS_PER_BYRON_ADDRESS)"
-
-  # Convert to Shelley addresses and keys
-  INDEX="$(printf "%03d" $((${N} - 1)))"
-  cardano-cli key convert-byron-key \
-    --byron-signing-key-file "byron/payment-keys.$INDEX.key" \
-    --out-file "byron/payment-keys.$INDEX-converted.skey" \
-    --byron-payment-key-type
-
-  cardano-cli key verification-key \
-    --signing-key-file "byron/payment-keys.$INDEX-converted.skey" \
-    --verification-key-file "byron/payment-keys.$INDEX-converted.vkey"
-
-  cardano-cli address build \
-    --testnet-magic "$NETWORK_MAGIC" \
-    --payment-verification-key-file "byron/payment-keys.$INDEX-converted.vkey" \
-    > "byron/address-$INDEX-converted"
 done
 
 # Update Proposal and votes
